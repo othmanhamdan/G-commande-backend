@@ -6,6 +6,7 @@ import com.snce.lightcom.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -26,9 +27,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
+@Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserService userService;
     @Override
@@ -51,14 +55,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
+
         //http.headers().frameOptions().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //http.formLogin();
-        http.cors().disable();
+        //http.cors().disable();
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/users/**","/login/**").permitAll();
+
         http.authorizeRequests().anyRequest().authenticated();
+
         http.addFilter(new JwtFilter(authenticationManagerBean()));
+        http.cors(withDefaults())
+                .httpBasic(withDefaults());
         http.addFilterBefore(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Bean

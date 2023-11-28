@@ -1,6 +1,7 @@
 package com.snce.lightcom.repository;
 
 import com.snce.lightcom.entities.Commande;
+import com.snce.lightcom.proj.CommandeProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 public interface CommandeRepository extends JpaRepository<Commande, Long> {
@@ -34,6 +36,18 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
 
 
     List<Commande> findByFournisseurId(Long id);
+
+    @Query("SELECT c.numero as numero, c.date as date, c.unite as unite, c.modePaiment as modePaiment, c.delaiLivraison, c.delaiPaiment, c.lieuLivraison as lieuLivraison, fr.libelle as libelle, a.referenceArticle as referenceArticle, a.article, a.uniteMesure, a.quantite, a.prixUnitaire, (a.quantite * a.prixUnitaire) AS montant\n" +
+            "FROM Commande c\n" +
+            "INNER JOIN c.fournisseur fr\n" +
+            "INNER JOIN c.commandeItems a\n" +
+            "WHERE c.id = :id_commande")
+    List<CommandeProjection> exportReport(@Param("id_commande") Long id_commande);
+
+    Commande findCommandeById(Long id);
+
+
+
 
 
 

@@ -14,6 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -28,25 +32,30 @@ public class CommandeServiceImpl implements CommandeService {
     //save()
     @Override
     public Commande save(Commande commande) {
-        if (commande.getNumero() != null){
-            commande.setDate(new Date());
+        if (!commande.getNumero().equals("")){
+
             commande.setNumero(commande.getNumero().toLowerCase());
             commande.setUnite(commande.getUnite().toLowerCase());
             commande.setDateRelanceFacture(UtilsDate.incDateByDays(commande.getDate(), commande.getDelaiLivraison() + 30 ));   //  date bc + delai liv + 30 jours !!
             commande.setReliquat(commande.getReliquat()-commande.getRemise());
             commande.getTypeCommande().toString();
+            System.out.println(commande);
             commandeRepository.save(commande);
-        }else {
+        }
+        if (commande.getNumero().equals("")) {
+            System.out.println(commande.getDate());
             Long maxId;
             if(UtilsDate.getYear(commande.getDate())==2014) // TODO à enlever en 2015
                 maxId= Long.valueOf(8029);
             else
-                maxId = commandeRepository.getMaxIdPrecedant(commande.getDate().getYear());
+                maxId = commandeRepository.getMaxIdPrecedant(UtilsDate.getYear(commande.getDate()));
+            System.out.println(maxId);
             if(maxId == null)
                 commande.genererNumero();
             else
                 commande.genererNumero(commande.getId() - maxId);
             commande.getTypeCommande().toString();
+            System.out.println(commande);
             commandeRepository.save(commande);
         }
         return commande;

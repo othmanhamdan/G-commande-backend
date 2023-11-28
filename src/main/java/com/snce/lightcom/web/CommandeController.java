@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RequestMapping("/commande")
 public class CommandeController {
     private final CommandeService commandeService;
@@ -42,6 +43,7 @@ public class CommandeController {
     }
 
     @GetMapping("/getAllCommande")
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostAuthorize("hasAnyAuthority('USER','ADMIN')")
     public Page<Commande> getAllCommandeController( @RequestParam String unite,
                                                     @RequestParam String numero,

@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200" , allowedHeaders = "*")
 @RequestMapping("/article")
 public class ArticleController {
 

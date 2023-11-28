@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 public class MapperService {
 
     public CommandeDTO fromCommande(Commande commande){
-        return null;
+        CommandeDTO commandeDTO = new CommandeDTO();
+        BeanUtils.copyProperties(commande,commandeDTO);
+        return commandeDTO;
     }
     public Commande fromCommandeDTO(CommandeDTO commandeDTO){
         return null;
